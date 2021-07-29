@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 
 using SharpMik.Interfaces;
-using System.Reflection;
 using SharpMik.IO;
 using SharpMik.Player;
+using SharpMik.Loaders;
 
 namespace SharpMik
 {
@@ -23,6 +23,7 @@ namespace SharpMik
 		#region private static variables
 		static bool s_UseBuiltInModuleLoaders = true;
 		static List<Type> s_RegistedModuleLoader = new List<Type>();
+		static List<IModLoader> loaders = new List<IModLoader>();
 		static bool s_HasAutoRegisted = false;
 		#endregion
 
@@ -37,16 +38,37 @@ namespace SharpMik
 		#region loader registration
 		static public void BuildRegisteredModules()
 		{
+
+		
 			if (!s_HasAutoRegisted && s_UseBuiltInModuleLoaders)
 			{
-				var list = Assembly.GetExecutingAssembly().GetTypes().Where( x => x.IsSubclassOf(typeof(IModLoader)));
 
-				foreach (var type in list)
-				{
-					s_RegistedModuleLoader.Add(type);
-				}
-				
-				s_HasAutoRegisted = false;
+				s_RegistedModuleLoader.Add(typeof(_669Loader));
+				loaders.Add(new _669Loader());
+				s_RegistedModuleLoader.Add(typeof(FARLoader));
+				loaders.Add(new FARLoader());
+				s_RegistedModuleLoader.Add(typeof(ITLoader));
+				loaders.Add(new ITLoader());
+				s_RegistedModuleLoader.Add(typeof(M15Loader));
+				loaders.Add(new M15Loader());
+				s_RegistedModuleLoader.Add(typeof(ModLoader));
+				loaders.Add(new ModLoader());
+				s_RegistedModuleLoader.Add(typeof(MTMLoader));
+				loaders.Add(new MTMLoader());
+				s_RegistedModuleLoader.Add(typeof(S3MLoader));
+				loaders.Add(new S3MLoader());
+				s_RegistedModuleLoader.Add(typeof(ULTLoader));
+				loaders.Add(new ULTLoader());
+				s_RegistedModuleLoader.Add(typeof(XMLoader));
+				loaders.Add(new XMLoader());
+				//	var list = Assembly.GetExecutingAssembly().GetTypes().Where( x => x.IsSubclassOf(typeof(IModLoader)));
+				//
+				//	foreach (var type in list)
+				//	{
+				//		s_RegistedModuleLoader.Add(type);
+				//	}
+				//	
+				s_HasAutoRegisted = true;
 			}
 		}
 
@@ -60,16 +82,15 @@ namespace SharpMik
 		#region Module Loading
 		public static Module Load(String fileName)
 		{
-			//try
-			{
+			try{
 				using (Stream stream = new FileStream(fileName, FileMode.Open,FileAccess.Read))
 				{
 					return Load(stream,64,0);
 				}
 			}
-			//catch (System.Exception ex)
+			catch (System.Exception ex)
 			{
-				//throw new Exception("Failed to open " + fileName,ex);
+				throw new Exception("Failed to open " + fileName,ex);
 			}
 		}
 
@@ -84,7 +105,7 @@ namespace SharpMik
 			for (int i = 0; i < s_RegistedModuleLoader.Count; i++)
 			{
 				modReader.Rewind();
-				IModLoader tester = (IModLoader)Activator.CreateInstance(s_RegistedModuleLoader[i]);
+				IModLoader tester = loaders[i];
 				tester.ModuleReader = modReader;
 
 				if (tester.Test())

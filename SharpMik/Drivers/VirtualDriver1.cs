@@ -312,7 +312,7 @@ namespace SharpMik.Drivers
 			}
 
 			/* Find empty slot to put sample address in */
-			for (handle = 0; handle < SharpMikCommon.MAXSAMPLEHANDLES; handle++)
+			for (handle = 0; handle < SharpMikCommon.UF_MAXMACRO; handle++)
 			{
 				if (m_Samples[handle] == null) 
 					break;

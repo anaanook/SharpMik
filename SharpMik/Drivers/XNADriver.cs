@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Audio;
-
 using SharpMik.Interfaces;
 using SharpMik.Drivers;
 using SharpMik.Player;
@@ -12,8 +11,9 @@ using SharpMik;
 
 namespace SharpMikXNA.Drivers
 {
-	public class XNADriver : VirtualDriver1
+	public class XNADriver : VirtualSoftwareDriver
 	{
+        
 		DynamicSoundEffectInstance m_SoundInstance;
 		bool m_Playing = false;
 
@@ -49,7 +49,7 @@ namespace SharpMikXNA.Drivers
 			m_SignedAudiobuffer = new sbyte[BUFFERSIZE];
 			m_Audiobuffer = new byte[BUFFERSIZE];
 
-			m_SoundInstance = new DynamicSoundEffectInstance(ModDriver.MixFreq, (ModDriver.Mode & SharpMikCommon.DMODE_STEREO) == SharpMikCommon.DMODE_STEREO ? AudioChannels.Stereo: AudioChannels.Mono);
+			m_SoundInstance = new DynamicSoundEffectInstance(ModDriver.MixFrequency, (ModDriver.Mode & SharpMikCommon.DMODE_STEREO) == SharpMikCommon.DMODE_STEREO ? AudioChannels.Stereo: AudioChannels.Mono);
 			m_SoundInstance.BufferNeeded += new EventHandler<EventArgs>(m_SoundInstance_BufferNeeded);
 
 			return base.Init();
@@ -63,7 +63,7 @@ namespace SharpMikXNA.Drivers
 				// which results in clicks in the sound between each request for audio if the buffer count is 1
 				for (int i = 0; i < BUFFERCOUNT; i++)
 				{
-					uint done = VC_WriteBytes(m_SignedAudiobuffer, (uint)BUFFERSIZE);
+					uint done = WriteBytes(m_SignedAudiobuffer, (uint)BUFFERSIZE);
 					Buffer.BlockCopy(m_SignedAudiobuffer, 0, m_Audiobuffer, 0, BUFFERSIZE);
 					m_SoundInstance.SubmitBuffer(m_Audiobuffer);
 				}
