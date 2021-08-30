@@ -31,7 +31,7 @@ namespace SharpMik.Player
 
         static byte md_hardchn = 0;
         static byte md_softchn = 0;
-		static ushort md_mixfreq = 44100;
+		static ushort md_mixfreq = 32000;
 		static ushort md_bpm = 125;
 		static byte md_reverb = 0;
 		static byte[] sfxinfo;

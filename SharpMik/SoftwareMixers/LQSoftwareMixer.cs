@@ -69,7 +69,8 @@ namespace SharpMik.SoftwareMixers
 					Array.Clear(m_VcTickBuf, 0, TICKLSIZE);
 
 					for (t = 0; t < m_VcSoftChannel; t++)
-					{
+						//for (t = 0; t < 1; t++)
+						{
 						m_CurrentVoiceInfo = m_VoiceInfos[t];
 
 						if (m_CurrentVoiceInfo.Kick != 0)
